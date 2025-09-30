@@ -19,19 +19,19 @@ REPOSITORY_NAME="mcp-repo"
 IMAGE_NAME="ga4-mcp"
 SECRET_NAME="mcp_adc_credentials"
 
-echo -e "${GREEN}🚀 Starting Google Analytics MCP Cloud Run Deployment${NC}"
+echo -e "${GREEN}Starting Google Analytics MCP Cloud Run Deployment${NC}"
 echo -e "${YELLOW}Project ID: ${PROJECT_ID}${NC}"
 echo -e "${YELLOW}Region: ${REGION}${NC}"
 echo -e "${YELLOW}Service: ${SERVICE_NAME}${NC}"
 
 # Check if gcloud is authenticated
 if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" | grep -q .; then
-    echo -e "${RED}❌ No active gcloud authentication found. Please run 'gcloud auth login' first.${NC}"
+    echo -e "${RED}ERROR: No active gcloud authentication found. Please run 'gcloud auth login' first.${NC}"
     exit 1
 fi
 
 # Enable required APIs
-echo -e "${YELLOW}📋 Enabling required APIs...${NC}"
+echo -e "${YELLOW}Enabling required APIs...${NC}"
 gcloud services enable \
     analyticsdata.googleapis.com \
     analyticsadmin.googleapis.com \
@@ -41,19 +41,19 @@ gcloud services enable \
     cloudbuild.googleapis.com
 
 # Create Artifact Registry repository if it doesn't exist
-echo -e "${YELLOW}📦 Creating Artifact Registry repository...${NC}"
+echo -e "${YELLOW}Creating Artifact Registry repository...${NC}"
 if ! gcloud artifacts repositories describe ${REPOSITORY_NAME} --location=${REGION} >/dev/null 2>&1; then
     gcloud artifacts repositories create ${REPOSITORY_NAME} \
         --repository-format=docker \
         --location=${REGION}
-    echo -e "${GREEN}✅ Created Artifact Registry repository${NC}"
+    echo -e "${GREEN}Created Artifact Registry repository${NC}"
 else
-    echo -e "${GREEN}✅ Artifact Registry repository already exists${NC}"
+    echo -e "${GREEN}Artifact Registry repository already exists${NC}"
 fi
 
 # Store ADC credentials in Secret Manager if they exist
 if [ -f "$HOME/.config/gcloud/application_default_credentials.json" ]; then
-    echo -e "${YELLOW}🔐 Storing ADC credentials in Secret Manager...${NC}"
+    echo -e "${YELLOW}Storing ADC credentials in Secret Manager...${NC}"
     
     # Create secret if it doesn't exist
     if ! gcloud secrets describe ${SECRET_NAME} >/dev/null 2>&1; then
@@ -69,9 +69,9 @@ if [ -f "$HOME/.config/gcloud/application_default_credentials.json" ]; then
         --member="serviceAccount:${PROJECT_ID}@appspot.gserviceaccount.com" \
         --role="roles/secretmanager.secretAccessor"
     
-    echo -e "${GREEN}✅ ADC credentials stored in Secret Manager${NC}"
+    echo -e "${GREEN}ADC credentials stored in Secret Manager${NC}"
 else
-    echo -e "${RED}❌ ADC credentials not found at $HOME/.config/gcloud/application_default_credentials.json${NC}"
+    echo -e "${RED}ERROR: ADC credentials not found at $HOME/.config/gcloud/application_default_credentials.json${NC}"
     echo -e "${YELLOW}Please run: gcloud auth application-default login${NC}"
     exit 1
 fi
@@ -84,10 +84,10 @@ gcloud builds submit \
     --tag ${IMAGE_URI} \
     --region=${REGION}
 
-echo -e "${GREEN}✅ Docker image built and pushed${NC}"
+echo -e "${GREEN}Docker image built and pushed${NC}"
 
 # Deploy to Cloud Run
-echo -e "${YELLOW}🚀 Deploying to Cloud Run...${NC}"
+echo -e "${YELLOW}Deploying to Cloud Run...${NC}"
 gcloud run deploy ${SERVICE_NAME} \
     --image=${IMAGE_URI} \
     --region=${REGION} \
@@ -101,18 +101,18 @@ gcloud run deploy ${SERVICE_NAME} \
 # Get service URL
 SERVICE_URL=$(gcloud run services describe ${SERVICE_NAME} --region ${REGION} --format='value(status.url)')
 
-echo -e "${GREEN}🎉 Deployment completed successfully!${NC}"
+echo -e "${GREEN}Deployment completed successfully!${NC}"
 echo -e "${GREEN}Service URL: ${SERVICE_URL}${NC}"
 
 # Test the deployment
-echo -e "${YELLOW}🧪 Testing deployment...${NC}"
+echo -e "${YELLOW}Testing deployment...${NC}"
 if curl -s "${SERVICE_URL}/health" >/dev/null; then
-    echo -e "${GREEN}✅ Health check passed${NC}"
+    echo -e "${GREEN}Health check passed${NC}"
 else
-    echo -e "${RED}❌ Health check failed${NC}"
+    echo -e "${RED}Health check failed${NC}"
 fi
 
-echo -e "${YELLOW}📋 Next steps:${NC}"
+echo -e "${YELLOW}Next steps:${NC}"
 echo -e "1. Add this to your Claude Desktop config:"
 echo -e "   ${GREEN}\"ga4-mcp\": {${NC}"
 echo -e "   ${GREEN}  \"transport\": {${NC}"
