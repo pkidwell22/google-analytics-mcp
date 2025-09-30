@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional
 
 from analytics_mcp.coordinator import mcp
 from analytics_mcp.tools.utils import _create_credentials
+from analytics_mcp.utils.google_retry import call_with_retry
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (
     DateRange,

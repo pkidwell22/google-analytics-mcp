@@ -14,11 +14,19 @@
 
 """Resolver module for human-friendly ID resolution across GA4, GSC, and GMC."""
 
+import os
 import re
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
 from analytics_mcp.coordinator import mcp
+from analytics_mcp.utils.cache import TTLCache, ttl_memoize
+
+# Initialize cache for resolver operations
+_resolver_cache = TTLCache(
+    maxsize=int(os.getenv("MCP_CACHE_MAXSIZE", "2048")),
+    ttl=float(os.getenv("MCP_CACHE_TTL_SEC", "600"))  # 10 min default
+)
 from analytics_mcp.tools.utils import _create_credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -80,8 +88,8 @@ def _fuzzy_match(query: str, candidates: List[str], threshold: float = 0.6) -> O
     return best_match if best_score >= threshold else None
 
 
-@mcp.tool(title="Find GA4 property by domain, URL, or name")
-async def find_ga4_property(query: str) -> Dict[str, Any]:
+@ttl_memoize(_resolver_cache)
+async def _find_ga4_property_internal(query: str) -> Dict[str, Any]:
     """Find GA4 property by domain, URL, or property name.
     
     Args:
@@ -205,8 +213,23 @@ async def find_ga4_property(query: str) -> Dict[str, Any]:
         }
 
 
-@mcp.tool(title="Find GSC site by domain or URL")
-async def find_gsc_site(query: str) -> Dict[str, Any]:
+@mcp.tool(title="Find GA4 property by domain, URL, or name")
+async def find_ga4_property(query: str) -> Dict[str, Any]:
+    """Find GA4 property by domain, URL, or property name.
+    
+    Args:
+        query: Domain (e.g., 'gatedepot.com'), URL, or property name
+    
+    Returns:
+        Dict containing property details and resolution metadata
+    """
+    result, cached = await _find_ga4_property_internal(query)
+    result["meta"]["cached"] = cached
+    return result
+
+
+@ttl_memoize(_resolver_cache)
+async def _find_gsc_site_internal(query: str) -> Dict[str, Any]:
     """Find GSC site by domain or URL.
     
     Args:
@@ -277,8 +300,23 @@ async def find_gsc_site(query: str) -> Dict[str, Any]:
         }
 
 
-@mcp.tool(title="Find GMC account by domain, brand, or name")
-async def find_gmc_account(query: str) -> Dict[str, Any]:
+@mcp.tool(title="Find GSC site by domain or URL")
+async def find_gsc_site(query: str) -> Dict[str, Any]:
+    """Find GSC site by domain or URL.
+    
+    Args:
+        query: Domain (e.g., 'gatedepot.com') or URL
+    
+    Returns:
+        Dict containing site details and resolution metadata
+    """
+    result, cached = await _find_gsc_site_internal(query)
+    result["meta"]["cached"] = cached
+    return result
+
+
+@ttl_memoize(_resolver_cache)
+async def _find_gmc_account_internal(query: str) -> Dict[str, Any]:
     """Find GMC account by domain, brand, or account name.
     
     Args:
@@ -358,6 +396,21 @@ async def find_gmc_account(query: str) -> Dict[str, Any]:
             "meta": {"query": query, "resolved": None, "source": "gmc"},
             "error": f"Error finding GMC account: {e}"
         }
+
+
+@mcp.tool(title="Find GMC account by domain, brand, or name")
+async def find_gmc_account(query: str) -> Dict[str, Any]:
+    """Find GMC account by domain, brand, or account name.
+    
+    Args:
+        query: Domain, brand name, or account name
+    
+    Returns:
+        Dict containing account details and resolution metadata
+    """
+    result, cached = await _find_gmc_account_internal(query)
+    result["meta"]["cached"] = cached
+    return result
 
 
 @mcp.tool(title="Find Google Ads links for a GA4 property")

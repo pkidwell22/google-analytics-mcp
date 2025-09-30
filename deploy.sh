@@ -95,7 +95,7 @@ gcloud run deploy ${SERVICE_NAME} \
     --memory=2Gi \
     --cpu=2 \
     --execution-environment=gen2 \
-    --set-env-vars="GOOGLE_PROJECT_ID=${PROJECT_ID}" \
+    --set-env-vars="GOOGLE_PROJECT_ID=${PROJECT_ID},MCP_CACHE_TTL_SEC=600,MCP_CACHE_MAXSIZE=2048,MCP_GOOGLE_RETRIES=5" \
     --update-secrets="/secrets/adc/credentials.json=${SECRET_NAME}:latest"
 
 # Get service URL
