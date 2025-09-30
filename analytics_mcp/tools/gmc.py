@@ -30,26 +30,23 @@ def _get_gmc_service():
 
 
 @mcp.tool(title="List accessible Merchant Center accounts")
-async def gmc_accounts_list(merchant_id: Optional[str] = None) -> Dict[str, Any]:
+async def gmc_accounts_list() -> Dict[str, Any]:
     """Returns a list of all accessible Merchant Center accounts.
-    
-    Args:
-        merchant_id: Optional merchant ID to list accounts for. If not provided, 
-                    will attempt to list all accessible accounts.
     
     Returns:
         Dict containing accounts list and metadata
     """
     try:
         service = _get_gmc_service()
-        if merchant_id:
-            # List accounts for a specific merchant
-            response = service.accounts().list(merchantId=merchant_id).execute()
-        else:
-            # Try to list all accounts (may require specific merchant ID)
-            response = service.accounts().list().execute()
+        # Since the account is not an MCA, we'll get the specific account details
+        # Gate Depot merchant ID: 5397681596
+        response = service.accounts().get(
+            merchantId=5397681596,
+            accountId=5397681596
+        ).execute()
         
-        accounts = response.get("resources", [])
+        # Return as a list with one account
+        accounts = [response]
         return {
             "rows": accounts,
             "meta": {"count": len(accounts)},
@@ -59,7 +56,7 @@ async def gmc_accounts_list(merchant_id: Optional[str] = None) -> Dict[str, Any]
         return {
             "rows": [],
             "meta": {"count": 0},
-            "error": f"Merchant Center accounts.list error: {e}"
+            "error": f"Merchant Center accounts.get error: {e}"
         }
 
 

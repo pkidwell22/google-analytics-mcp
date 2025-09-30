@@ -20,8 +20,8 @@ of the server.
 """
 from mcp.server.fastmcp import FastMCP
 
-# Creates the singleton with SSE endpoint configuration.
-mcp = FastMCP("Google Analytics Server", sse_path="/sse", port=8080, host="0.0.0.0")
+# Creates the singleton for Streamable HTTP transport.
+mcp = FastMCP("Google Analytics Server", port=8080, host="0.0.0.0")
 
 # Add health check endpoint for Cloud Run
 @mcp.custom_route("/health", methods=["GET"])

@@ -35,6 +35,11 @@ from analytics_mcp.tools.reporting import realtime  # noqa: F401
 from analytics_mcp.tools.reporting import core  # noqa: F401
 from analytics_mcp.tools import gsc  # noqa: F401
 from analytics_mcp.tools import gmc  # noqa: F401
+from analytics_mcp.tools import resolver  # noqa: F401
+from analytics_mcp.tools import whoami  # noqa: F401
+from analytics_mcp.tools import ga4_enhanced  # noqa: F401
+from analytics_mcp.tools import gsc_enhanced  # noqa: F401
+from analytics_mcp.tools import gmc_enhanced  # noqa: F401
 
 
 def run_server(transport: str = "stdio", port: Optional[int] = None) -> None:
@@ -48,8 +53,11 @@ def run_server(transport: str = "stdio", port: Optional[int] = None) -> None:
         if port is None:
             port = int(os.environ.get("PORT", 8080))
         
-        # Use streamable-http transport for MCP over HTTP
-        # The port is configured in the FastMCP constructor, not in run()
+        # Configure the FastMCP instance for HTTP transport
+        mcp.host = "0.0.0.0"
+        mcp.port = port
+        
+        # Use FastMCP HTTP transport with single /mcp endpoint
         mcp.run(transport="streamable-http")
     else:
         mcp.run()
