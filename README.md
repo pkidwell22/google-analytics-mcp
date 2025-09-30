@@ -1,192 +1,219 @@
-# Google Analytics MCP Server (Experimental)
+# Google Analytics MCP Server
 
-[![PyPI version](https://img.shields.io/pypi/v/analytics-mcp.svg)](https://pypi.org/project/analytics-mcp/)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![GitHub branch check runs](https://img.shields.io/github/check-runs/googleanalytics/google-analytics-mcp/main)](https://github.com/googleanalytics/google-analytics-mcp/actions?query=branch%3Amain++)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/analytics-mcp)](https://pypi.org/project/analytics-mcp/)
-[![GitHub stars](https://img.shields.io/github/stars/googleanalytics/google-analytics-mcp?style=social)](https://github.com/googleanalytics/google-analytics-mcp/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/googleanalytics/google-analytics-mcp?style=social)](https://github.com/googleanalytics/google-analytics-mcp/network/members)
-[![YouTube Video Views](https://img.shields.io/youtube/views/PT4wGPxWiRQ)](https://www.youtube.com/watch?v=PT4wGPxWiRQ)
+A powerful Model Context Protocol (MCP) server that provides comprehensive Google Analytics 4 (GA4) and Google Search Console (GSC) integration for Claude Desktop and other MCP clients.
 
-This repo contains the source code for running a local
-[MCP](https://modelcontextprotocol.io) server that interacts with APIs for
-[Google Analytics](https://support.google.com/analytics).
+## 🚀 Features
 
-Join the discussion and ask questions in the
-[🤖-analytics-mcp channel](https://discord.com/channels/971845904002871346/1398002598665257060)
-on Discord.
+### Google Analytics 4 (GA4) Tools (20 tools)
+- **Reporting**: Run custom reports with dimensions, metrics, filters, and date ranges
+- **Realtime**: Get real-time analytics data
+- **Admin**: Manage conversion events, data streams, custom dimensions/metrics
+- **Account Management**: List accounts, properties, and Google Ads links
 
-## Tools 🛠️
+### Google Search Console (GSC) Tools (3 tools)
+- **Sites**: List all Search Console sites
+- **Sitemaps**: Manage and list sitemaps for sites
+- **Search Analytics**: Query search performance data with dimensions and filters
 
-The server uses the
-[Google Analytics Admin API](https://developers.google.com/analytics/devguides/config/admin/v1)
-and
-[Google Analytics Data API](https://developers.google.com/analytics/devguides/reporting/data/v1)
-to provide several
-[Tools](https://modelcontextprotocol.io/docs/concepts/tools) for use with LLMs.
+### Deployment Options
+- **Cloud Run**: Production-ready deployment with auto-scaling
+- **Docker**: Local development and testing
+- **Claude Desktop**: Direct integration via HTTP transport
 
-### Retrieve account and property information 🟠
+## 📋 Prerequisites
 
-- `get_account_summaries`: Retrieves information about the user's Google
-  Analytics accounts and properties.
-- `get_property_details`: Returns details about a property.
-- `list_google_ads_links`: Returns a list of links to Google Ads accounts for
-  a property.
+- Python 3.10+
+- Google Cloud Project with billing enabled
+- Google Analytics 4 property
+- Google Search Console access (optional)
+- Docker (for local testing)
+- `gcloud` CLI configured
 
-### Run core reports 📙
+## 🛠️ Quick Start
 
-- `run_report`: Runs a Google Analytics report using the Data API.
-- `get_custom_dimensions_and_metrics`: Retrieves the custom dimensions and
-  metrics for a specific property.
+### 1. Clone and Setup
 
-### Run realtime reports ⏳
-
-- `run_realtime_report`: Runs a Google Analytics realtime report using the
-  Data API.
-
-## Setup instructions 🔧
-
-✨ Watch the [Google Analytics MCP Setup
-Tutorial](https://youtu.be/nS8HLdwmVlY) on YouTube for a step-by-step
-walkthrough of these instructions.
-
-[![Watch the video](https://img.youtube.com/vi/nS8HLdwmVlY/mqdefault.jpg)](https://www.youtube.com/watch?v=nS8HLdwmVlY)
-
-Setup involves the following steps:
-
-1.  Configure Python.
-1.  Configure credentials for Google Analytics.
-1.  Configure Gemini.
-
-### Configure Python 🐍
-
-[Install pipx](https://pipx.pypa.io/stable/#install-pipx).
-
-### Enable APIs in your project ✅
-
-[Follow the instructions](https://support.google.com/googleapi/answer/6158841)
-to enable the following APIs in your Google Cloud project:
-
-* [Google Analytics Admin API](https://console.cloud.google.com/apis/library/analyticsadmin.googleapis.com)
-* [Google Analytics Data API](https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com)
-
-### Configure credentials 🔑
-
-Configure your [Application Default Credentials
-(ADC)](https://cloud.google.com/docs/authentication/provide-credentials-adc).
-Make sure the credentials are for a user with access to your Google Analytics
-accounts or properties.
-
-Credentials must include the Google Analytics read-only scope:
-
-```
-https://www.googleapis.com/auth/analytics.readonly
+```bash
+git clone https://github.com/pkidwell22/google-analytics-mcp.git
+cd google-analytics-mcp
+pip install -e .
 ```
 
-Check out
-[Manage OAuth Clients](https://support.google.com/cloud/answer/15549257)
-for how to create an OAuth client.
+### 2. Authentication Setup
 
-Here are some sample `gcloud` commands you might find useful:
-
-- Set up ADC using user credentials and an OAuth desktop or web client after
-  downloading the client JSON to `YOUR_CLIENT_JSON_FILE`.
-
-  ```shell
-  gcloud auth application-default login \
-    --scopes https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform \
-    --client-id-file=YOUR_CLIENT_JSON_FILE
-  ```
-
-- Set up ADC using service account impersonation.
-
-  ```shell
-  gcloud auth application-default login \
-    --impersonate-service-account=SERVICE_ACCOUNT_EMAIL \
-    --scopes=https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform
-  ```
-
-When the `gcloud auth application-default` command completes, copy the
-`PATH_TO_CREDENTIALS_JSON` file location printed to the console in the
-following message. You'll need this for the next step!
-
-```
-Credentials saved to file: [PATH_TO_CREDENTIALS_JSON]
+```bash
+# Run the OAuth setup script
+./setup-oauth.sh
 ```
 
-### Configure Gemini
+This will:
+- Enable required Google APIs
+- Set up Application Default Credentials
+- Configure OAuth scopes for GA4 and GSC
 
-1.  Install [Gemini
-    CLI](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/index.md)
-    or [Gemini Code
-    Assist](https://marketplace.visualstudio.com/items?itemName=Google.geminicodeassist).
+### 3. Local Testing
 
-1.  Create or edit the file at `~/.gemini/settings.json`, adding your server
-    to the `mcpServers` list.
+```bash
+# Build and run with Docker
+./test-local.sh
+```
 
-    Replace `PATH_TO_CREDENTIALS_JSON` with the path you copied in the previous
-    step.
+### 4. Cloud Run Deployment
 
-    We also recommend that you add a `GOOGLE_CLOUD_PROJECT` attribute to the
-    `env` object. Replace `YOUR_PROJECT_ID` in the following example with the
-    [project ID](https://support.google.com/googleapi/answer/7014113) of your
-    Google Cloud project.
+```bash
+# Deploy to Google Cloud Run
+./deploy.sh
+```
 
-    ```json
-    {
-      "mcpServers": {
-        "analytics-mcp": {
-          "command": "pipx",
-          "args": [
-            "run",
-            "analytics-mcp"
-          ],
-          "env": {
-            "GOOGLE_APPLICATION_CREDENTIALS": "PATH_TO_CREDENTIALS_JSON",
-            "GOOGLE_PROJECT_ID": "YOUR_PROJECT_ID"
-          }
-        }
+## 🔧 Configuration
+
+### Claude Desktop Integration
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "ga4-mcp": {
+      "transport": {
+        "type": "http",
+        "url": "https://your-service-url.run.app/mcp"
+      },
+      "env": {
+        "GOOGLE_PROJECT_ID": "your-project-id"
       }
     }
-    ```
+  }
+}
+```
 
-## Try it out 🥼
+### Environment Variables
 
-Launch Gemini Code Assist or Gemini CLI and type `/mcp`. You should see
-`analytics-mcp` listed in the results.
+- `GOOGLE_PROJECT_ID`: Your Google Cloud Project ID
+- `GOOGLE_APPLICATION_CREDENTIALS`: Path to credentials file (auto-configured in Cloud Run)
 
-Here are some sample prompts to get you started:
+## 📊 Available Tools
 
-- Ask what the server can do:
+### GA4 Reporting Tools
+- `run_report` - Run custom GA4 reports
+- `run_realtime_report` - Get real-time data
+- `get_account_summaries` - List GA4 accounts
 
-  ```
-  what can the analytics-mcp server do?
-  ```
+### GA4 Admin Tools
+- `list_conversion_events` - List conversion events
+- `get_conversion_event` - Get conversion event details
+- `list_data_streams` - List data streams
+- `get_data_stream` - Get data stream details
+- `list_custom_dimensions` - List custom dimensions
+- `get_custom_dimension` - Get custom dimension details
+- `list_custom_metrics` - List custom metrics
+- `get_custom_metric` - Get custom metric details
 
-- Ask about a Google Analytics property
+### GSC Tools
+- `gsc_sites_list` - List Search Console sites
+- `gsc_sitemaps_list` - List sitemaps for a site
+- `gsc_search_analytics_query` - Query search performance data
 
-  ```
-  Give me details about my Google Analytics property with 'xyz' in the name
-  ```
+## 💡 Example Usage
 
-- Prompt for analysis:
+### With Claude Desktop
 
-  ```
-  what are the most popular events in my Google Analytics property in the last 180 days?
-  ```
+Ask Claude to:
+- "List all my GA4 accounts and properties"
+- "Show me top pages by traffic for the last 30 days"
+- "Get search performance data for my website"
+- "List all conversion events for property 123456789"
 
-- Ask about signed-in users:
+### Direct API Usage
 
-  ```
-  were most of my users in the last 6 months logged in?
-  ```
+```bash
+# Health check
+curl https://your-service-url.run.app/health
 
-- Ask about property configuration:
+# List tools (requires MCP session)
+curl -X POST https://your-service-url.run.app/mcp \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -d '{"jsonrpc":"2.0","id":"1","method":"tools/list","params":{}}'
+```
 
-  ```
-  what are the custom dimensions and custom metrics in my property?
-  ```
+## 🏗️ Architecture
 
-## Contributing ✨
+```
+analytics_mcp/
+├── coordinator.py          # MCP server configuration
+├── server.py              # Entry point and transport handling
+├── tools/
+│   ├── utils.py           # Common utilities and auth
+│   ├── reporting/         # GA4 Data API tools
+│   ├── admin/             # GA4 Admin API tools
+│   └── gsc.py             # Google Search Console tools
+└── __init__.py
+```
 
-Contributions welcome! See the [Contributing Guide](CONTRIBUTING.md).
+## 🔐 Security
+
+- Uses Application Default Credentials (ADC)
+- No service account keys stored in code
+- OAuth scopes limited to read-only access
+- Credentials stored securely in Google Secret Manager (Cloud Run)
+- Local credentials in `~/.config/gcloud/application_default_credentials.json`
+
+## 📝 Development
+
+### Adding New Tools
+
+1. Create tool function in appropriate module
+2. Use `@mcp.tool()` decorator
+3. Import in `server.py`
+4. Test locally and deploy
+
+### Testing
+
+```bash
+# Run local tests
+python3 -m analytics_mcp.server --transport http --port 8080
+
+# Test specific tools
+python3 -c "
+import asyncio
+from analytics_mcp.tools.reporting.core import run_report
+# Test your tool here
+"
+```
+
+## 🚀 Deployment Scripts
+
+- `setup-oauth.sh` - Initial OAuth setup
+- `test-local.sh` - Local Docker testing
+- `deploy.sh` - Cloud Run deployment
+- `test-mcp.sh` - MCP server testing
+
+## 📄 License
+
+Apache 2.0 - See LICENSE file for details
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## 📞 Support
+
+- Issues: [GitHub Issues](https://github.com/pkidwell22/google-analytics-mcp/issues)
+- Documentation: See `README_mcp_claude.md` for Claude Desktop setup
+
+## 🎯 Roadmap
+
+- [ ] URL Inspection API for GSC
+- [ ] Enhanced filtering options
+- [ ] Batch operations
+- [ ] Custom dashboard tools
+- [ ] Export functionality
+
+---
+
+**Built with ❤️ for the Claude Desktop community**
