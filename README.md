@@ -2,7 +2,7 @@
 
 A powerful Model Context Protocol (MCP) server that provides comprehensive Google Analytics 4 (GA4) and Google Search Console (GSC) integration for Claude Desktop and other MCP clients.
 
-## 🚀 Features
+## Features
 
 ### Google Analytics 4 (GA4) Tools (20 tools)
 - **Reporting**: Run custom reports with dimensions, metrics, filters, and date ranges
@@ -137,7 +137,7 @@ curl -X POST https://your-service-url.run.app/mcp \
   -d '{"jsonrpc":"2.0","id":"1","method":"tools/list","params":{}}'
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 analytics_mcp/
@@ -151,7 +151,7 @@ analytics_mcp/
 └── __init__.py
 ```
 
-## 🔐 Security
+## Security
 
 - Uses Application Default Credentials (ADC)
 - No service account keys stored in code
@@ -159,7 +159,7 @@ analytics_mcp/
 - Credentials stored securely in Google Secret Manager (Cloud Run)
 - Local credentials in `~/.config/gcloud/application_default_credentials.json`
 
-## 📝 Development
+## Development
 
 ### Adding New Tools
 
@@ -182,18 +182,18 @@ from analytics_mcp.tools.reporting.core import run_report
 "
 ```
 
-## 🚀 Deployment Scripts
+## Deployment Scripts
 
 - `setup-oauth.sh` - Initial OAuth setup
 - `test-local.sh` - Local Docker testing
 - `deploy.sh` - Cloud Run deployment
 - `test-mcp.sh` - MCP server testing
 
-## 📄 License
+## License
 
 Apache 2.0 - See LICENSE file for details
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -201,12 +201,12 @@ Apache 2.0 - See LICENSE file for details
 4. Add tests
 5. Submit a pull request
 
-## 📞 Support
+## Support
 
 - Issues: [GitHub Issues](https://github.com/pkidwell22/google-analytics-mcp/issues)
 - Documentation: See `README_mcp_claude.md` for Claude Desktop setup
 
-## 🎯 Roadmap
+## Roadmap
 
 - [ ] URL Inspection API for GSC
 - [ ] Enhanced filtering options
@@ -214,6 +214,3 @@ Apache 2.0 - See LICENSE file for details
 - [ ] Custom dashboard tools
 - [ ] Export functionality
 
----
-
-**Built with ❤️ for the Claude Desktop community**
