@@ -11,8 +11,11 @@ dependencies = [
     "google-analytics-data==0.18.19",
     "google-analytics-admin==0.25.0",
     "google-auth~=2.40",
+    "google-api-python-client>=2.137.0",
     "mcp[cli]>=1.2.0",
-    "httpx>=0.28.1"
+    "httpx>=0.28.1",
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0"
 ]
 keywords = [
     "google analytics",

@@ -1,68 +1,65 @@
+# Python
+__pycache__/
 *.py[cod]
-*.sw[op]
-
-# C extensions
+*$py.class
 *.so
-
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-.eggs
-parts
-bin
-var
-sdist
-develop-eggs
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
 .installed.cfg
-lib
-lib64
-__pycache__
+*.egg
+MANIFEST
 
-# Installer logs
-pip-log.txt
-
-# Unit test / coverage reports
-.coverage
-.nox
-.cache
-.pytest_cache
-
-
-# Mac
-.DS_Store
-
-# JetBrains
-.idea
-
-# VS Code
-.vscode
-
-# emacs
-*~
-
-# Built documentation
-docs/_build
-docs.metadata
-
-# Virtual environment
+# Virtual environments
+.env
+.venv
 env/
 venv/
-.venv/
+ENV/
+env.bak/
+venv.bak/
 
-# pyenv
-.python-version
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# Test logs
-coverage.xml
-*sponge_log.xml
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# System test environment variables.
-system_tests/local_test_setup
+# OAuth credentials
+client_secret_*.json
+*.json
+!claude-desktop-config-example.json
 
-# Make sure a generated file isn't accidentally committed.
-pylintrc
-pylintrc.test
+# Logs
+*.log
 
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json

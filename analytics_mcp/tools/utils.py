@@ -47,6 +47,12 @@ _READ_ONLY_ANALYTICS_SCOPE = (
 
 def _create_credentials() -> google.auth.credentials.Credentials:
     """Returns Application Default Credentials with read-only scope."""
+    import os
+    
+    # Check if we're in Cloud Run and have a mounted secret
+    if os.path.exists("/secrets/adc/credentials.json"):
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/secrets/adc/credentials.json"
+    
     (credentials, _) = google.auth.default(scopes=[_READ_ONLY_ANALYTICS_SCOPE])
     return credentials
 

@@ -20,5 +20,12 @@ of the server.
 """
 from mcp.server.fastmcp import FastMCP
 
-# Creates the singleton.
-mcp = FastMCP("Google Analytics Server")
+# Creates the singleton with SSE endpoint configuration.
+mcp = FastMCP("Google Analytics Server", sse_path="/sse", port=8080, host="0.0.0.0")
+
+# Add health check endpoint for Cloud Run
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request):
+    """Health check endpoint for Cloud Run."""
+    from starlette.responses import JSONResponse
+    return JSONResponse({"status": "healthy", "service": "Google Analytics MCP Server"})

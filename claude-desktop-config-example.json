@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "ga4-mcp": {
+      "transport": {
+        "type": "http",
+        "url": "https://ga4-mcp-265267513550.us-central1.run.app/sse"
+      },
+      "env": {
+        "GOOGLE_PROJECT_ID": "continual-rhino-472501-i6"
+      }
+    }
+  }
+}
