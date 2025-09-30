@@ -1,33 +1,99 @@
 # Google Analytics MCP Server
 
-A powerful Model Context Protocol (MCP) server that provides comprehensive Google Analytics 4 (GA4) and Google Search Console (GSC) integration for Claude Desktop and other MCP clients.
+A powerful Model Context Protocol (MCP) server that provides comprehensive Google Analytics 4 (GA4), Google Search Console (GSC), and Google Merchant Center (GMC) integration for Claude Desktop and other MCP clients.
 
-## Features
+## ✨ Key Features
 
-### Google Analytics 4 (GA4) Tools (20 tools)
-- **Reporting**: Run custom reports with dimensions, metrics, filters, and date ranges
-- **Realtime**: Get real-time analytics data
-- **Admin**: Manage conversion events, data streams, custom dimensions/metrics
-- **Account Management**: List accounts, properties, and Google Ads links
+### 🚀 **49 Specialized Tools** Across Google Platforms
+- **GA4**: 20+ tools for reporting, admin, and discovery
+- **GSC**: 10+ tools for search analytics and site management  
+- **GMC**: 11+ tools for merchant center and product management
+- **Resolver**: 4 tools for human-friendly ID resolution
+- **Whoami**: 1 unified summary tool
 
-### Google Search Console (GSC) Tools (3 tools)
-- **Sites**: List all Search Console sites
-- **Sitemaps**: Manage and list sitemaps for sites
-- **Search Analytics**: Query search performance data with dimensions and filters
+### 🧠 **Smart Resolver Layer**
+- **Human-friendly queries**: Use domains like "gatedepot.com" instead of cryptic IDs
+- **Auto-resolution**: Automatically finds the right property/site/account
+- **Fuzzy matching**: Handles typos and variations intelligently
+- **Multi-platform**: Works across GA4, GSC, and GMC
 
-### Deployment Options
-- **Cloud Run**: Production-ready deployment with auto-scaling
-- **Docker**: Local development and testing
-- **Claude Desktop**: Direct integration via HTTP transport
+### ⚡ **Performance Optimizations**
+- **TTL Caching**: 10-minute cache for discovery calls (instant repeat lookups)
+- **Auto-retry**: Handles Google API rate limits with exponential backoff
+- **Configurable**: Environment variables for cache and retry settings
 
-## 📋 Prerequisites
+### 🔒 **Enterprise Security**
+- **OAuth Integration**: User-based authentication via Application Default Credentials
+- **Secret Management**: Credentials stored securely in Google Secret Manager
+- **Read-only Access**: Limited scopes for data protection
 
-- Python 3.10+
-- Google Cloud Project with billing enabled
-- Google Analytics 4 property
-- Google Search Console access (optional)
-- Docker (for local testing)
-- `gcloud` CLI configured
+## 📊 Available Tools
+
+### GA4 Tools (20 tools)
+**Core Reporting:**
+- `run_report` - Custom GA4 reports with dimensions, metrics, filters
+- `run_realtime_report` - Real-time analytics data
+- `get_custom_dimensions_and_metrics` - Property metadata
+
+**Admin Management:**
+- `get_account_summaries` - List all GA4 accounts and properties
+- `get_property_details` - Detailed property information
+- `list_conversion_events` - Conversion event management
+- `list_data_streams` - Data stream configuration
+- `list_custom_dimensions` - Custom dimension management
+- `list_custom_metrics` - Custom metric management
+- `list_google_ads_links` - Google Ads integration
+
+**Enhanced Discovery:**
+- `properties_list_accounts` - Flattened account/property list
+- `properties_find` - Search properties by name/URL
+- `datastreams_find` - Find streams by URL/measurement ID
+- `report_top_pages` - Top pages preset report
+- `report_revenue_by_channel` - Revenue analysis preset
+- `report_events_over_time` - Event tracking over time
+- `report_landing_pages_vs_conversions` - Landing page analysis
+
+### GSC Tools (10 tools)
+**Basic Operations:**
+- `gsc_sites_list` - List Search Console sites
+- `gsc_sitemaps_list` - Manage sitemaps
+- `gsc_search_analytics_query` - Search performance data
+
+**Enhanced Analytics:**
+- `sites_find` - Find sites by domain/URL
+- `permissions_get` - Site permission details
+- `top_queries` - Top search queries preset
+- `top_pages` - Top performing pages preset
+- `queries_for_page` - Queries driving specific pages
+- `country_device_matrix` - Geographic and device analysis
+- `sa_build_filters` - Advanced filter builder
+
+### GMC Tools (11 tools)
+**Account Management:**
+- `gmc_accounts_list` - List Merchant Center accounts
+- `gmc_accounts_get` - Account details
+- `gmc_accounts_issues_list` - Account issues
+- `accounts_list` - Enhanced account listing
+- `account_status` - Account status and summary
+
+**Product Management:**
+- `gmc_products_list` - List products
+- `gmc_products_get` - Product details
+- `products_find` - Search products by query
+- `product_status` - Individual product status
+- `product_status_aggregate` - Bulk product status
+
+**Reporting:**
+- `report_issues_last_30d` - Recent issues report
+
+### Resolver Tools (4 tools)
+- `find_ga4_property` - Resolve domain/URL to GA4 property
+- `find_gsc_site` - Resolve domain/URL to GSC site
+- `find_gmc_account` - Resolve domain/brand to GMC account
+- `find_google_ads_link` - Find Google Ads links for properties
+
+### Whoami Tool (1 tool)
+- `summary` - Unified overview of all accessible accounts and resources
 
 ## 🛠️ Quick Start
 
@@ -47,15 +113,18 @@ pip install -e .
 ```
 
 This will:
-- Enable required Google APIs
+- Enable required Google APIs (GA4, GSC, GMC, Cloud Run, Secret Manager)
 - Set up Application Default Credentials
-- Configure OAuth scopes for GA4 and GSC
+- Configure OAuth scopes for all platforms
 
 ### 3. Local Testing
 
 ```bash
 # Build and run with Docker
 ./test-local.sh
+
+# Or run directly
+python3 -m analytics_mcp.server --transport http --port 8080
 ```
 
 ### 4. Cloud Run Deployment
@@ -77,7 +146,7 @@ Add to your `claude_desktop_config.json`:
     "ga4-mcp": {
       "transport": {
         "type": "http",
-        "url": "https://your-service-url.run.app/mcp"
+        "url": "https://ga4-mcp-syiiroz2la-uc.a.run.app"
       },
       "env": {
         "GOOGLE_PROJECT_ID": "your-project-id"
@@ -90,110 +159,142 @@ Add to your `claude_desktop_config.json`:
 ### Environment Variables
 
 - `GOOGLE_PROJECT_ID`: Your Google Cloud Project ID
-- `GOOGLE_APPLICATION_CREDENTIALS`: Path to credentials file (auto-configured in Cloud Run)
-
-## 📊 Available Tools
-
-### GA4 Reporting Tools
-- `run_report` - Run custom GA4 reports
-- `run_realtime_report` - Get real-time data
-- `get_account_summaries` - List GA4 accounts
-
-### GA4 Admin Tools
-- `list_conversion_events` - List conversion events
-- `get_conversion_event` - Get conversion event details
-- `list_data_streams` - List data streams
-- `get_data_stream` - Get data stream details
-- `list_custom_dimensions` - List custom dimensions
-- `get_custom_dimension` - Get custom dimension details
-- `list_custom_metrics` - List custom metrics
-- `get_custom_metric` - Get custom metric details
-
-### GSC Tools
-- `gsc_sites_list` - List Search Console sites
-- `gsc_sitemaps_list` - List sitemaps for a site
-- `gsc_search_analytics_query` - Query search performance data
+- `MCP_CACHE_TTL_SEC`: Cache TTL in seconds (default: 600)
+- `MCP_CACHE_MAXSIZE`: Maximum cache entries (default: 2048)
+- `MCP_GOOGLE_RETRIES`: API retry attempts (default: 5)
 
 ## 💡 Example Usage
 
 ### With Claude Desktop
 
-Ask Claude to:
-- "List all my GA4 accounts and properties"
-- "Show me top pages by traffic for the last 30 days"
-- "Get search performance data for my website"
-- "List all conversion events for property 123456789"
+**Natural Language Queries:**
+- "Show me revenue by channel for gatedepot.com"
+- "What are the top pages for my site?"
+- "Find conversion issues in my Merchant Center"
+- "List all my Google properties and accounts"
+- "Show me search performance for my landing pages"
+
+**Advanced Analytics:**
+- "Get top queries driving traffic to /products page"
+- "Show me country and device breakdown for last month"
+- "Find products with issues in my Merchant Center"
+- "Analyze events over time for purchase events"
 
 ### Direct API Usage
 
 ```bash
 # Health check
-curl https://your-service-url.run.app/health
+curl https://ga4-mcp-syiiroz2la-uc.a.run.app/health
 
-# List tools (requires MCP session)
-curl -X POST https://your-service-url.run.app/mcp \
-  -H "Content-Type: application/json" \
-  -H "Accept: application/json, text/event-stream" \
-  -d '{"jsonrpc":"2.0","id":"1","method":"tools/list","params":{}}'
+# Test cache functionality
+bash scripts/smoke_cache.sh
 ```
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 analytics_mcp/
-├── coordinator.py          # MCP server configuration
-├── server.py              # Entry point and transport handling
+├── coordinator.py              # MCP server configuration
+├── server.py                  # Entry point and transport handling
 ├── tools/
-│   ├── utils.py           # Common utilities and auth
-│   ├── reporting/         # GA4 Data API tools
-│   ├── admin/             # GA4 Admin API tools
-│   └── gsc.py             # Google Search Console tools
-└── __init__.py
+│   ├── utils.py               # Common utilities and auth
+│   ├── reporting/             # GA4 Data API tools
+│   ├── admin/                 # GA4 Admin API tools
+│   ├── gsc.py                 # Google Search Console tools
+│   ├── gsc_enhanced.py        # Enhanced GSC tools
+│   ├── gmc.py                 # Google Merchant Center tools
+│   ├── gmc_enhanced.py        # Enhanced GMC tools
+│   ├── ga4_enhanced.py        # Enhanced GA4 tools
+│   ├── resolver.py            # Human-friendly ID resolution
+│   └── whoami.py              # Unified account summary
+├── utils/
+│   ├── cache.py               # TTL caching system
+│   └── google_retry.py        # API retry logic
+└── scripts/
+    └── smoke_cache.sh         # Cache validation script
 ```
 
-## Security
+## 🔒 Security
 
-- Uses Application Default Credentials (ADC)
-- No service account keys stored in code
-- OAuth scopes limited to read-only access
-- Credentials stored securely in Google Secret Manager (Cloud Run)
-- Local credentials in `~/.config/gcloud/application_default_credentials.json`
+- **OAuth Integration**: User-based authentication via Application Default Credentials
+- **Secret Management**: Credentials stored securely in Google Secret Manager
+- **Read-only Access**: Limited scopes for data protection
+- **No Hardcoded Keys**: All sensitive data externalized
+- **Environment-based Config**: Secure configuration via environment variables
 
-## Development
+## ⚡ Performance Features
 
-### Adding New Tools
+### Smart Caching
+- **TTL-based**: Configurable cache expiration (default: 10 minutes)
+- **Memory efficient**: LRU eviction with configurable max size
+- **Transparent**: Cache status visible in `meta.cached` field
+- **Selective**: Only caches discovery/resolver calls, not real-time data
 
-1. Create tool function in appropriate module
-2. Use `@mcp.tool()` decorator
-3. Import in `server.py`
-4. Test locally and deploy
+### Resilient API Calls
+- **Auto-retry**: Handles 429/5xx errors automatically
+- **Exponential backoff**: Prevents API hammering
+- **Random jitter**: Avoids thundering herd problems
+- **Configurable**: Adjustable retry attempts and timing
 
-### Testing
+## 🧪 Testing
+
+### Local Testing
 
 ```bash
-# Run local tests
+# Run server locally
 python3 -m analytics_mcp.server --transport http --port 8080
 
 # Test specific tools
 python3 -c "
 import asyncio
-from analytics_mcp.tools.reporting.core import run_report
+from analytics_mcp.tools.resolver import find_ga4_property
 # Test your tool here
 "
 ```
 
-## Deployment Scripts
+### Cache Testing
 
-- `setup-oauth.sh` - Initial OAuth setup
+```bash
+# Test cache functionality
+bash scripts/smoke_cache.sh
+
+# Test with custom URL
+URL=https://your-service-url.run.app bash scripts/smoke_cache.sh
+```
+
+## 📈 Real-World Impact
+
+**Before MCP:**
+- Copy/paste property IDs like `properties/341922028`
+- Switch between multiple Google tools
+- Remember different interfaces and APIs
+- Manual ID lookups and context switching
+
+**After MCP:**
+- Natural language: "Show me revenue for gatedepot.com"
+- Unified interface through Claude
+- Instant cached lookups
+- Automatic error handling and retries
+
+## 🚀 Deployment Scripts
+
+- `setup-oauth.sh` - Initial OAuth setup and API enablement
 - `test-local.sh` - Local Docker testing
-- `deploy.sh` - Cloud Run deployment
+- `deploy.sh` - Cloud Run deployment with environment variables
 - `test-mcp.sh` - MCP server testing
+- `scripts/smoke_cache.sh` - Cache validation testing
 
-## License
+## 📋 Prerequisites
 
-Apache 2.0 - See LICENSE file for details
+- Python 3.10+
+- Google Cloud Project with billing enabled
+- Google Analytics 4 property
+- Google Search Console access (optional)
+- Google Merchant Center access (optional)
+- Docker (for local testing)
+- `gcloud` CLI configured
 
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -201,16 +302,29 @@ Apache 2.0 - See LICENSE file for details
 4. Add tests
 5. Submit a pull request
 
-## Support
+## 📄 License
 
-- Issues: [GitHub Issues](https://github.com/pkidwell22/google-analytics-mcp/issues)
-- Documentation: See `README_mcp_claude.md` for Claude Desktop setup
+Apache 2.0 - See LICENSE file for details
 
-## Roadmap
+## 🆘 Support
 
-- [ ] URL Inspection API for GSC
-- [ ] Enhanced filtering options
-- [ ] Batch operations
-- [ ] Custom dashboard tools
-- [ ] Export functionality
+- **Issues**: [GitHub Issues](https://github.com/pkidwell22/google-analytics-mcp/issues)
+- **Documentation**: See `README_mcp_claude.md` for Claude Desktop setup
+- **Deployment**: See `DEPLOYMENT_STEPS.md` for detailed deployment guide
 
+## 🗺️ Roadmap
+
+- [x] **Resolver Layer** - Human-friendly ID resolution
+- [x] **TTL Caching** - Performance optimization
+- [x] **Auto-retry** - Resilient API calls
+- [x] **GMC Integration** - Merchant Center tools
+- [x] **Enhanced Tools** - Discovery and preset reports
+- [ ] **URL Inspection API** - GSC URL inspection
+- [ ] **Batch Operations** - Bulk data operations
+- [ ] **Custom Dashboards** - Visualization tools
+- [ ] **Export Functionality** - Data export capabilities
+- [ ] **Advanced Filtering** - More sophisticated query options
+
+---
+
+**Built with ❤️ for the Claude AI community**
