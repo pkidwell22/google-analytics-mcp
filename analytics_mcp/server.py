@@ -34,6 +34,7 @@ from analytics_mcp.tools.admin import custom_definitions  # noqa: F401
 from analytics_mcp.tools.reporting import realtime  # noqa: F401
 from analytics_mcp.tools.reporting import core  # noqa: F401
 from analytics_mcp.tools import gsc  # noqa: F401
+from analytics_mcp.tools import gmc  # noqa: F401
 
 
 def run_server(transport: str = "stdio", port: Optional[int] = None) -> None:

@@ -12,6 +12,7 @@ dependencies = [
     "google-analytics-admin==0.25.0",
     "google-auth~=2.40",
     "google-api-python-client>=2.137.0",
+    "google-shopping-merchant-products>=0.1.0",
     "mcp[cli]>=1.2.0",
     "httpx>=0.28.1",
     "fastapi>=0.104.0",
