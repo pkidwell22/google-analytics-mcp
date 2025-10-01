@@ -2,32 +2,32 @@
 
 A powerful Model Context Protocol (MCP) server that provides comprehensive Google Analytics 4 (GA4), Google Search Console (GSC), and Google Merchant Center (GMC) integration for Claude Desktop and other MCP clients.
 
-## ✨ Key Features
+## Key Features
 
-### 🚀 **49 Specialized Tools** Across Google Platforms
+### **49 Specialized Tools** Across Google Platforms
 - **GA4**: 20+ tools for reporting, admin, and discovery
 - **GSC**: 10+ tools for search analytics and site management  
 - **GMC**: 11+ tools for merchant center and product management
 - **Resolver**: 4 tools for human-friendly ID resolution
 - **Whoami**: 1 unified summary tool
 
-### 🧠 **Smart Resolver Layer**
+### **Smart Resolver Layer**
 - **Human-friendly queries**: Use domains like "gatedepot.com" instead of cryptic IDs
 - **Auto-resolution**: Automatically finds the right property/site/account
 - **Fuzzy matching**: Handles typos and variations intelligently
 - **Multi-platform**: Works across GA4, GSC, and GMC
 
-### ⚡ **Performance Optimizations**
+### **Performance Optimizations**
 - **TTL Caching**: 10-minute cache for discovery calls (instant repeat lookups)
 - **Auto-retry**: Handles Google API rate limits with exponential backoff
 - **Configurable**: Environment variables for cache and retry settings
 
-### 🔒 **Enterprise Security**
+### **Enterprise Security**
 - **OAuth Integration**: User-based authentication via Application Default Credentials
 - **Secret Management**: Credentials stored securely in Google Secret Manager
 - **Read-only Access**: Limited scopes for data protection
 
-## 📊 Available Tools
+## Available Tools
 
 ### GA4 Tools (20 tools)
 **Core Reporting:**
@@ -163,7 +163,7 @@ Add to your `claude_desktop_config.json`:
 - `MCP_CACHE_MAXSIZE`: Maximum cache entries (default: 2048)
 - `MCP_GOOGLE_RETRIES`: API retry attempts (default: 5)
 
-## 💡 Example Usage
+## Example Usage
 
 ### With Claude Desktop
 
@@ -190,7 +190,7 @@ curl https://ga4-mcp-syiiroz2la-uc.a.run.app/health
 bash scripts/smoke_cache.sh
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 analytics_mcp/
@@ -214,7 +214,7 @@ analytics_mcp/
     └── smoke_cache.sh         # Cache validation script
 ```
 
-## 🔒 Security
+## Security
 
 - **OAuth Integration**: User-based authentication via Application Default Credentials
 - **Secret Management**: Credentials stored securely in Google Secret Manager
@@ -222,7 +222,7 @@ analytics_mcp/
 - **No Hardcoded Keys**: All sensitive data externalized
 - **Environment-based Config**: Secure configuration via environment variables
 
-## ⚡ Performance Features
+## Performance Features
 
 ### Smart Caching
 - **TTL-based**: Configurable cache expiration (default: 10 minutes)
@@ -236,7 +236,7 @@ analytics_mcp/
 - **Random jitter**: Avoids thundering herd problems
 - **Configurable**: Adjustable retry attempts and timing
 
-## 🧪 Testing
+## Testing
 
 ### Local Testing
 
@@ -262,7 +262,7 @@ bash scripts/smoke_cache.sh
 URL=https://your-service-url.run.app bash scripts/smoke_cache.sh
 ```
 
-## 📈 Real-World Impact
+## Real-World Impact
 
 **Before MCP:**
 - Copy/paste property IDs like `properties/341922028`
@@ -276,7 +276,7 @@ URL=https://your-service-url.run.app bash scripts/smoke_cache.sh
 - Instant cached lookups
 - Automatic error handling and retries
 
-## 🚀 Deployment Scripts
+## Deployment Scripts
 
 - `setup-oauth.sh` - Initial OAuth setup and API enablement
 - `test-local.sh` - Local Docker testing
@@ -284,7 +284,7 @@ URL=https://your-service-url.run.app bash scripts/smoke_cache.sh
 - `test-mcp.sh` - MCP server testing
 - `scripts/smoke_cache.sh` - Cache validation testing
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.10+
 - Google Cloud Project with billing enabled
@@ -294,7 +294,7 @@ URL=https://your-service-url.run.app bash scripts/smoke_cache.sh
 - Docker (for local testing)
 - `gcloud` CLI configured
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -302,17 +302,17 @@ URL=https://your-service-url.run.app bash scripts/smoke_cache.sh
 4. Add tests
 5. Submit a pull request
 
-## 📄 License
+## License
 
 Apache 2.0 - See LICENSE file for details
 
-## 🆘 Support
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/pkidwell22/google-analytics-mcp/issues)
 - **Documentation**: See `README_mcp_claude.md` for Claude Desktop setup
 - **Deployment**: See `DEPLOYMENT_STEPS.md` for detailed deployment guide
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] **Resolver Layer** - Human-friendly ID resolution
 - [x] **TTL Caching** - Performance optimization
@@ -326,5 +326,3 @@ Apache 2.0 - See LICENSE file for details
 - [ ] **Advanced Filtering** - More sophisticated query options
 
 ---
-
-**Built with ❤️ for the Claude AI community**
